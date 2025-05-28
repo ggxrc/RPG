@@ -1,0 +1,64 @@
+@font-face {
+  font-family: "FonteHome";
+  src: url("/fontes/BreatheFire.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.create-page {
+  background: url("/imagens/background2.png") no-repeat center center fixed;
+  background-size: cover;
+  color: #ffffff; /* Texto branco para contraste */
+  min-height: 100vh;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-family: "FonteHome", sans-serif;
+}
+
+.create-container {
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.7
+  ); /* Fundo escuro com transparência para contraste */
+  padding: 50px;
+  border-radius: 20px;
+  max-width: 900px;
+  margin: auto;
+  box-shadow: 0 0 70px rgba(0, 0, 0, 0.5);
+  letter-spacing: 2px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.back-home-link {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+
+  color: #fff;
+  background-color: #333;
+
+  padding: 10px 20px;
+  border-radius: 10px;
+
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.2rem;
+
+  letter-spacing: 3.5px;
+  line-height: 1;
+
+  display: inline-block;
+  margin: 20px auto;
+  transition: background-color 0.3s, transform 0.2s;
+  text-align: center;
+}
+
+.back-home-link:hover {
+  background-color: #555;
+  transform: scale(1.05);
+}

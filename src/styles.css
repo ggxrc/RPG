@@ -1,0 +1,25 @@
+/* Estilo principal da ficha de personagem */
+.character-sheet {
+  background-color: #f4f4f9; /* Fundo claro levemente azulado */
+  padding: 20px; /* Espaçamento interno */
+  border-radius: 8px; /* Cantos arredondados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra leve para dar destaque */ /* Largura máxima da ficha */
+  margin: 20px auto; /* Margem superior/inferior e centralização horizontal */
+}
+
+/* Estiliza os parágrafos e listas dentro da seção de informações */
+.character-info p,
+.character-info ul {
+  margin: 10px 0; /* Espaçamento vertical */
+}
+
+/* Remove os estilos padrão das listas */
+.character-info ul {
+  list-style: none; /* Remove marcadores da lista */
+  padding-left: 0; /* Remove recuo da lista */
+}
+
+/* Ajuste no espaçamento entre itens da lista */
+.character-info li {
+  margin: 5px 0; /* Espaço entre cada item */
+}

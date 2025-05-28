@@ -1,0 +1,91 @@
+@font-face {
+  font-family: "FonteHome";
+  src: url("/fontes/BreatheFire.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+.home-title,
+.home-subtitle {
+  font-family: "FonteHome", sans-serif;
+}
+
+.home-page {
+  text-align: center;
+  background: url("/imagens/background.gif") no-repeat center center fixed; /* Cor de fundo */
+  background-size: cover;
+  color: #000000; /* Cor do texto */
+  min-height: 100vh; /* Ocupa toda a altura da tela */
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-family: "FonteHome", sans-serif;
+}
+
+.home-title {
+  font-size: 4.3rem; /* Tamanho grande para o título */
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.home-subtitle {
+  font-size: 2.3rem; /* Um pouco menor para o subtítulo */
+  margin-bottom: 30px;
+}
+
+/* Botão "Criar Personagem" */
+.create-button {
+  all: unset; /* Remove todos os estilos herdados do botão */
+  display: block;
+  width: 300px; /* ajuste conforme necessário */
+  height: 110px;
+  background-image: url("/imagens/botaomadeira.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+  margin: 20px auto 0;
+  transition: transform 0.5s ease, filter 0.4s ease;
+}
+
+.create-button:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+.create-button:focus,
+.create-button:hover {
+  outline: none;
+  box-shadow: none;
+}
+
+.create-button-link {
+  display: inline-block;
+  margin: 20px auto 0;
+  transition: transform 0.5s ease, filter 0.4s ease;
+}
+
+.create-button-img {
+  width: 250px;
+  height: 130px;
+  display: block;
+  cursor: pointer;
+}
+
+.create-button-link:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  height: 100%;
+  background-color: #1e1e2f; /* mesma cor da home, se quiser consistência */
+}

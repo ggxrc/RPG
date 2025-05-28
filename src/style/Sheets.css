@@ -1,0 +1,26 @@
+.sheets-container {
+  background-image: url("/imagens/fichasus.png"); /* ajuste esse nome se o arquivo for diferente */
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sheets-content {
+  padding: 2rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.sheets-content h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.sheets-content p {
+  font-size: 1.2rem;
+  color: #333;
+}

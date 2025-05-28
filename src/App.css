@@ -1,0 +1,65 @@
+/* Centraliza o app */
+#root {
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+}
+
+/* Header fixo e transparente sobre o fundo */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: transparent;
+  border: none;
+  z-index: 1000;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Botões/links do header */
+header a,
+header button {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.4em 0.8em;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+/* Garante que o main não crie blocos ou padding extra */
+.app-main {
+  padding: 0 !important;
+  background: none !important;
+}
+.icon-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  margin-right: 1.1rem;
+}
+
+.icon-button img {
+  width: 100px; /* ou o tamanho que você preferir */
+  height: 45px;
+  transition: transform 0.2s ease;
+}
+
+.icon-button img:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000; /* abaixo dos modais, acima do resto */
+}

@@ -1,0 +1,145 @@
+.character-sheet {
+  background: url("/imagens/ficha.png") no-repeat center center;
+  background-size: contain;
+  color: #000000;
+  padding: 4rem;
+  border-radius: 12px;
+  width: 800px;
+  min-height: 600px;
+  margin: 2rem auto;
+  font-family: "Cinzel", serif;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+  position: relative;
+  border: 2px solid #6b5e45;
+}
+
+.character-sheet::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+.sheet-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  margin-top: 1.9rem;
+  color: #482705;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+.basic-info p:nth-child(1),
+.basic-info p:nth-child(2),
+.basic-info p:nth-child(3) {
+  padding-left: 9rem; /* mais para a direita */
+  font-size: 1.6rem; /* aumentar a fonte */
+}
+
+.sheet-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.basic-info {
+  flex: 1;
+}
+
+.basic-info p {
+  margin: 0.8rem 0;
+  font-size: 1.1rem;
+  color: #482705;
+}
+
+.character-image {
+  width: 200px;
+  height: 230px;
+  border: 2px solid #950602;
+  border-radius: 10px;
+  object-fit: contain;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+.character-image {
+  transform: translateX(-130px); /* move a imagem para a esquerda */
+}
+
+.attributes-box {
+  margin-top: 1rem;
+  padding: 1em;
+  border-radius: 28px;
+  margin-top: -3rem; /* menor margem = sobe */
+  font-size: 1.1rem; /* aumentar a fonte */
+}
+
+.attributes-box h3 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  color: #482705;
+}
+
+.attributes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: 0.5rem 2rem;
+  justify-items: start;
+  padding: 0 6rem;
+}
+
+.attr {
+  white-space: nowrap; /* Impede quebra de linha */
+  padding: 0.3rem 0.6rem;
+  font-weight: bold;
+  border-radius: 3px;
+  color: #482705;
+  font-size: 1.3rem;
+}
+
+.sheet-actions {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.sheet-actions button {
+  margin: 0 8px;
+  padding: 0.6rem 1.2rem;
+  background-color: #0a7122 !important;
+  color: #fff !important;
+  border: 2px solid #4caf50 !important;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.sheet-actions button:hover {
+  background-color: #4caf50 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.points-remaining {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+@font-face {
+  font-family: "Breafd";
+  src: url("/fontes/BreatheFire.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+body {
+  font-family: "Breafd", serif;
+}
+.character-sheet * {
+  font-family: "Breafd", serif;
+}
