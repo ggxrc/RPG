@@ -1,45 +1,19 @@
-// testDb.js
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+// src/services/api.js
 
-async function main() {
-  console.log("Tentando criar um usuário...");
-  try {
-    const newUser = await prisma.user.create({
-      data: {
-        username: "testuser",
-        email: "test@example.com",
-        passwordHash: "somehash", // Em um app real, isso seria um hash seguro
-      },
-    });
-    console.log("Usuário criado:", newUser);
+import axios from "axios";
 
-    //Você também pode tentar criar um personagem, se quiser
-    const newCharacter = await prisma.character.create({
-      data: {
-        name: "Gandalf",
-        race: "Maia",
-        className: "Wizard",
-        attributes: {
-          strength: 10,
-          dexterity: 10,
-          constitution: 10,
-          intelligence: 18,
-          wisdom: 18,
-          charisma: 15,
-        },
-        health: 100,
-        shield: 50,
-        //Se quiser associar ao usuário criado acima:
-        userId: newUser.id,
-      },
-    });
-    console.log("Personagem criado:", newCharacter);
-  } catch (e) {
-    console.error("Erro ao criar:", e);
-  } finally {
-    await prisma.$disconnect();
+const API_URL = "http://localhost:5000/api";
+
+const api = axios.create({
+  baseURL: API_URL,
+});
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`; // CORRIGIDO AQUI
   }
-}
+  return config;
+});
 
-main();
+export default api;
