@@ -285,7 +285,7 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
               disabled={invalid || remaining !== 0} // Desabilita se pontos excedidos OU não totalmente gastos
               className={invalid || remaining !== 0 ? "disabled-button" : ""}
             >
-              Salvar Alterações na Visualização
+              💾Salvar Alterações
             </button>
             <button onClick={() => setIsEditing(false)}>
               ❌ Cancelar Edição
@@ -298,7 +298,7 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
             {/* NOVO BOTÃO DE SALVAR NO BANCO DE DADOS */}
             {user && ( // Só mostra o botão se o usuário estiver logado
               <button onClick={handleSaveSheetToDb}>
-                💾 Salvar Ficha no Banco
+                💾 Salvar Ficha
               </button>
             )}
           </>
