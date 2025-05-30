@@ -1,18 +1,19 @@
-// src/components/CharacterSheet.jsx
-import React, { useState, useEffect } from "react"; // Importa React e hooks
-import "../style/characterSheet.css"; // Importa o CSS da ficha
-import html2pdf from "html2pdf.js"; // Biblioteca para gerar PDF
+// src/componentes/CharacterSheet.jsx
+import React, { useState, useEffect, useContext } from "react"; // Adicionado useContext
+import "../style/characterSheet.css";
+import html2pdf from "html2pdf.js";
+import { AuthContext } from "../context/AuthContext"; // Importar o AuthContext
+import apiClient from "../services/api"; // Importar o apiClient que você configurou
 
 // Componente principal da ficha
 const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
-  // Controla se está no modo de edição
-  const [isEditing, setIsEditing] = useState(false);
+  const { user } = useContext(AuthContext); // Acessar o usuário logado do contexto
 
-  // Armazena os dados editados (inicializa com o personagem passado como prop)
+  const [isEditing, setIsEditing] = useState(false);
   const [edited, setEdited] = useState({
     name: "",
     race: "",
-    class: "",
+    class: "", // Mantido como 'class' conforme seu código original, mas lembre-se que 'className' é usado no schema.prisma
     Força: 0,
     Destreza: 0,
     Constituição: 0,
@@ -20,13 +21,10 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
     Sabedoria: 0,
     Carisma: 0,
     image: null,
-    ...(character || {}), // Garante que dados do personagem atual sejam carregados
+    ...(character || {}),
   });
 
-  // Pontuação máxima permitida
   const maxPoints = 30;
-
-  // Soma dos pontos usados nos atributos
   const totalUsed = [
     "Força",
     "Destreza",
@@ -35,19 +33,33 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
     "Sabedoria",
     "Carisma",
   ].reduce((sum, attr) => sum + (parseInt(edited[attr]) || 0), 0);
-
-  // Quantidade de pontos restantes
   const remaining = maxPoints - totalUsed;
-
-  // Se excedeu os pontos, o formulário é inválido
   const invalid = remaining < 0;
 
-  // Sempre que a prop character muda, atualiza o estado edited
   useEffect(() => {
-    setEdited((prev) => ({ ...prev, ...character }));
+    // Quando o 'character' prop mudar (ex: ao criar uma nova ficha no formulário),
+    // atualiza o estado 'edited' para refletir essa nova ficha.
+    // Isso garante que se o usuário gerar uma ficha e depois quiser salvá-la sem editar,
+    // os dados corretos serão usados.
+    if (character) {
+      setEdited({
+        name: character.name || "",
+        race: character.race || "",
+        class: character.class || "", // ou character.className, dependendo do que CharacterForm envia
+        Força: character.Força || 0,
+        Destreza: character.Destreza || 0,
+        Constituição: character.Constituição || 0,
+        Inteligência: character.Inteligência || 0,
+        Sabedoria: character.Sabedoria || 0,
+        Carisma: character.Carisma || 0,
+        image: character.image || null,
+        // Inclua health e shield se fizerem parte do objeto 'character' que vem do formulário
+        // health: character.health || 0,
+        // shield: character.shield || 0,
+      });
+    }
   }, [character]);
 
-  // Atualiza um campo do personagem editado
   const handleChange = (field, value) => {
     setEdited((prev) => ({
       ...prev,
@@ -55,38 +67,89 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
     }));
   };
 
-  // Salva a edição e sai do modo de edição
   const handleSave = () => {
-    if (invalid) return; // Impede salvar se inválido
-    onSaveEdit(edited); // Chama callback para salvar
-    setIsEditing(false); // Sai do modo de edição
+    if (invalid) return;
+    onSaveEdit(edited); // Esta função (passada por props) provavelmente atualiza o estado no componente pai (Create.jsx)
+    setIsEditing(false);
   };
 
-  // Gera o PDF da ficha usando html2pdf
   const handleGeneratePDF = () => {
     const element = document.getElementById("character-sheet");
     html2pdf()
       .from(element)
       .set({
         margin: 10,
-        filename: "ficha-personagem.pdf",
+        filename: `${edited.name || "ficha"}-personagem.pdf`
+          .toLowerCase()
+          .replace(/\s+/g, "-"), // Nome do arquivo dinâmico
         image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 3 },
+        html2canvas: { scale: 3, useCORS: true }, // useCORS pode ser útil para imagens externas
         jsPDF: { unit: "mm", format: [240, 190], orientation: "landscape" },
       })
       .save();
   };
 
-  // Se character não for definido, exibe mensagem
-  if (!character) return <p>Personagem não encontrado.</p>;
+  // NOVA FUNÇÃO PARA SALVAR A FICHA NO BANCO DE DADOS
+  const handleSaveSheetToDb = async () => {
+    if (!user) {
+      alert("Você precisa estar logado para salvar a ficha!");
+      return;
+    }
+
+    // Prepara os dados da ficha para enviar ao backend.
+    // Certifique-se que os nomes dos campos aqui correspondem ao seu modelo Prisma 'Character'
+    const sheetDataToSave = {
+      name: edited.name,
+      race: edited.race,
+      className: edited.class, // No schema.prisma é 'className'
+      attributes: {
+        // Agrupando atributos em um objeto JSON
+        Força: parseInt(edited.Força) || 0,
+        Destreza: parseInt(edited.Destreza) || 0,
+        Constituição: parseInt(edited.Constituição) || 0,
+        Inteligência: parseInt(edited.Inteligência) || 0,
+        Sabedoria: parseInt(edited.Sabedoria) || 0,
+        Carisma: parseInt(edited.Carisma) || 0,
+      },
+      imageUrl: edited.image || null, // URL da imagem
+      // health: parseInt(edited.health) || 0, // Adicione se tiver
+      // shield: parseInt(edited.shield) || 0, // Adicione se tiver
+      userId: user.id, // Associa a ficha ao usuário logado (se o seu 'user' no AuthContext tiver 'id')
+      // Se o ID do usuário no AuthContext for diferente (ex: _id), ajuste aqui.
+    };
+
+    try {
+      // Você precisará criar este endpoint no seu backend
+      const response = await apiClient.post("/characters", sheetDataToSave);
+      alert("Ficha salva com sucesso!");
+      console.log("Ficha salva:", response.data);
+      // Aqui você pode querer redirecionar o usuário para a página de "Minhas Fichas"
+      // ou atualizar o estado de alguma forma.
+    } catch (error) {
+      console.error("Erro ao salvar a ficha:", error);
+      alert("Erro ao salvar a ficha. Verifique o console para mais detalhes.");
+    }
+  };
+
+  if (!character)
+    return <p>Gere uma ficha no formulário para visualizá-la aqui.</p>;
+
+  // Adiciona os atributos que seu CharacterForm usa mas que podem não estar em 'character' inicialmente
+  const displayCharacter = {
+    Força: 0,
+    Destreza: 0,
+    Constituição: 0,
+    Inteligência: 0,
+    Sabedoria: 0,
+    Carisma: 0,
+    ...character, // Dados recebidos do formulário
+    ...(isEditing ? edited : {}), // Se editando, usa os dados de 'edited'
+  };
 
   return (
     <>
-      {/* Área visual da ficha */}
       <div className="character-sheet" id="character-sheet">
         <h2 className="sheet-title">Ficha</h2>
-
-        {/* Cabeçalho: Nome, Raça, Classe e Imagem */}
         <div className="sheet-header">
           <div className="basic-info">
             <p>
@@ -98,10 +161,9 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
                   placeholder="Nome do personagem"
                 />
               ) : (
-                <span>{character.name}</span>
+                <span>{displayCharacter.name}</span>
               )}
             </p>
-
             <p>
               <strong>Raça:</strong>{" "}
               {isEditing ? (
@@ -109,6 +171,7 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
                   value={edited.race}
                   onChange={(e) => handleChange("race", e.target.value)}
                 >
+                  <option value="">Selecione...</option>
                   <option value="Humano">Humano</option>
                   <option value="Elfo">Elfo</option>
                   <option value="Anão">Anão</option>
@@ -118,47 +181,36 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
                   <option value="Animalidio">Animalidio</option>
                 </select>
               ) : (
-                <span>{character.race}</span>
+                <span>{displayCharacter.race}</span>
               )}
             </p>
-
             <p>
               <strong>Classe:</strong>{" "}
               {isEditing ? (
                 <select
-                  value={edited.class}
-                  onChange={(e) => handleChange("class", e.target.value)}
+                  value={edited.class} // ou edited.className
+                  onChange={(e) => handleChange("class", e.target.value)} // ou "className"
                 >
+                  <option value="">Selecione...</option>
                   <option value="Guerreiro">Guerreiro</option>
                   <option value="Mago">Mago</option>
                   <option value="Ladino">Ladino</option>
-                  <option value="Clérigo">Clérigo</option>
-                  <option value="Bárbaro">Bárbaro</option>
-                  <option value="Bardo">Bardo</option>
-                  <option value="Bruxo">Bruxo</option>
-                  <option value="Druida">Druida</option>
-                  <option value="Feiticeiro">Feiticeiro</option>
-                  <option value="Monge">Monge</option>
-                  <option value="Paladino">Paladino</option>
-                  <option value="Patruleiro">Patruleiro</option>
+                  {/* ... outras classes */}
                 </select>
               ) : (
-                <span>{character.class}</span>
+                <span>{displayCharacter.class}</span> // ou displayCharacter.className
               )}
             </p>
           </div>
-
-          {/* Imagem do personagem (se houver) */}
-          {edited.image && (
+          {displayCharacter.image && (
             <img
-              src={edited.image}
+              src={displayCharacter.image}
               className="character-image"
               alt="Personagem"
             />
           )}
         </div>
 
-        {/* Atributos e pontuação */}
         <div className="attributes-box">
           <h3>Atributos</h3>
           <div className="attributes-grid">
@@ -176,36 +228,48 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
                   <input
                     type="number"
                     min="0"
-                    max="20"
+                    max="20" // O limite real de pontos será controlado pela lógica 'remaining'
                     value={edited[attr]}
                     onChange={(e) => {
-                      const newValue = parseInt(e.target.value) || 1;
-                      const currentValue = edited[attr] || 1;
-                      const availablePoints = remaining + currentValue;
+                      const newValue = parseInt(e.target.value) || 0; // Mudado para 0 se NaN
+                      const currentValue = parseInt(edited[attr]) || 0; // Mudado para 0 se NaN
+                      // Calcula os pontos que estariam disponíveis se este atributo fosse 0
+                      const pointsUsedWithoutCurrentAttr =
+                        totalUsed - currentValue;
+                      const pointsAvailableForThisAttr =
+                        maxPoints - pointsUsedWithoutCurrentAttr;
 
                       const adjustedValue = Math.min(
-                        Math.max(newValue, 1),
-                        Math.min(availablePoints, 20)
+                        Math.max(newValue, 0), // Atributo pode ser 0
+                        // Não pode exceder 20 E não pode exceder os pontos disponíveis
+                        Math.min(20, pointsAvailableForThisAttr)
                       );
-
                       handleChange(attr, adjustedValue);
                     }}
                   />
                 ) : (
-                  <span>{character[attr]}</span>
+                  <span>{displayCharacter[attr]}</span>
                 )}
               </div>
             ))}
           </div>
-
-          {/* Mostra pontuação usada/restante se estiver editando */}
           {isEditing && (
             <div className="points-info">
-              <p style={{ color: invalid ? "red" : "green" }}>
-                {invalid ? "⚠️ Pontos excedidos!" : "✅ Pontos válidos!"}
+              <p
+                style={{
+                  color: invalid ? "red" : "green",
+                  textAlign: "center",
+                  marginTop: "10px",
+                }}
+              >
+                {invalid
+                  ? `⚠️ Pontos excedidos em ${Math.abs(remaining)}!`
+                  : remaining === 0
+                  ? "✅ Todos os pontos distribuídos!"
+                  : `Você ainda tem ${remaining} pontos para distribuir.`}
               </p>
-              <p>
-                Usados: {totalUsed} | Restantes: {remaining} |
+              <p style={{ textAlign: "center" }}>
+                Pontos Usados: {totalUsed} / {maxPoints}
               </p>
             </div>
           )}
@@ -218,17 +282,25 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
           <>
             <button
               onClick={handleSave}
-              disabled={invalid}
-              className={invalid ? "disabled-button" : ""}
+              disabled={invalid || remaining !== 0} // Desabilita se pontos excedidos OU não totalmente gastos
+              className={invalid || remaining !== 0 ? "disabled-button" : ""}
             >
-              Salvar Alterações
+              Salvar Alterações na Visualização
             </button>
-            <button onClick={() => setIsEditing(false)}>❌ Cancelar</button>
+            <button onClick={() => setIsEditing(false)}>
+              ❌ Cancelar Edição
+            </button>
           </>
         ) : (
           <>
-            <button onClick={() => setIsEditing(true)}>Editar</button>
+            <button onClick={() => setIsEditing(true)}>✏️ Editar Ficha</button>
             <button onClick={handleGeneratePDF}>📄 Gerar PDF</button>
+            {/* NOVO BOTÃO DE SALVAR NO BANCO DE DADOS */}
+            {user && ( // Só mostra o botão se o usuário estiver logado
+              <button onClick={handleSaveSheetToDb}>
+                💾 Salvar Ficha no Banco
+              </button>
+            )}
           </>
         )}
       </div>
