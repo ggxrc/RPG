@@ -5,6 +5,9 @@ import html2pdf from "html2pdf.js";
 import { AuthContext } from "../context/AuthContext"; // Importar o AuthContext
 import apiClient from "../services/api"; // Importar o apiClient que você configurou
 
+// IMPORTAR ÍCONES DO LUCIDE
+import { Heart, Shield } from "lucide-react";
+
 // Componente principal da ficha
 const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
   const { user } = useContext(AuthContext); // Acessar o usuário logado do contexto
@@ -98,6 +101,12 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
 
     // Prepara os dados da ficha para enviar ao backend.
     // Certifique-se que os nomes dos campos aqui correspondem ao seu modelo Prisma 'Character'
+    const constituicaoAtual = parseInt(edited.Constituição) || 0;
+    const destrezaAtual = parseInt(edited.Destreza) || 0;
+
+    const vidaCalculada = constituicaoAtual * 5 + 10;
+    const escudoCalculado = Math.floor(destrezaAtual / 2);
+
     const sheetDataToSave = {
       name: edited.name,
       race: edited.race,
@@ -112,8 +121,8 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
         Carisma: parseInt(edited.Carisma) || 0,
       },
       imageUrl: edited.image || null, // URL da imagem
-      // health: parseInt(edited.health) || 0, // Adicione se tiver
-      // shield: parseInt(edited.shield) || 0, // Adicione se tiver
+      health: vidaCalculada, // ADICIONADO
+      shield: escudoCalculado,
       userId: user.id, // Associa a ficha ao usuário logado (se o seu 'user' no AuthContext tiver 'id')
       // Se o ID do usuário no AuthContext for diferente (ex: _id), ajuste aqui.
     };
@@ -145,6 +154,11 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
     ...character, // Dados recebidos do formulário
     ...(isEditing ? edited : {}), // Se editando, usa os dados de 'edited'
   };
+
+  // --- LÓGICA DE CÁLCULO PARA VIDA E ESCUDO ---
+  // Use displayCharacter para que reflita o personagem atual ou os valores editados
+  const vida = (parseInt(displayCharacter.Constituição) || 0) * 5 + 10;
+  const escudo = Math.floor((parseInt(displayCharacter.Destreza) || 0) / 2);
 
   return (
     <>
@@ -195,7 +209,15 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
                   <option value="Guerreiro">Guerreiro</option>
                   <option value="Mago">Mago</option>
                   <option value="Ladino">Ladino</option>
-                  {/* ... outras classes */}
+                  <option value="Clérigo">Clérigo</option>
+                  <option value="Bárbaro">Bárbaro</option>
+                  <option value="Bardo">Bardo</option>
+                  <option value="Bruxo">Bruxo</option>
+                  <option value="Druida">Druida</option>
+                  <option value="Feiticeiro">Feiticeiro</option>
+                  <option value="Monge">Monge</option>
+                  <option value="Paladino">Paladino</option>
+                  <option value="Patruleiro">Patruleiro</option>
                 </select>
               ) : (
                 <span>{displayCharacter.class}</span> // ou displayCharacter.className
@@ -210,6 +232,19 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
             />
           )}
         </div>
+
+        {/* NOVA SEÇÃO PARA VIDA E ESCUDO */}
+        {/* <div className="status-section">
+          <div className="status-item">
+            <Heart color="red" size={28} />
+            <span className="status-value">{vida}</span>
+          </div>
+          <div className="status-item">
+            <Shield color="blue" size={28} />
+            <span className="status-value">{escudo}</span>
+          </div>
+        </div> */}
+        {/* FIM DA NOVA SEÇÃO */}
 
         <div className="attributes-box">
           <h3>Atributos</h3>
@@ -297,9 +332,7 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
             <button onClick={handleGeneratePDF}>📄 Gerar PDF</button>
             {/* NOVO BOTÃO DE SALVAR NO BANCO DE DADOS */}
             {user && ( // Só mostra o botão se o usuário estiver logado
-              <button onClick={handleSaveSheetToDb}>
-                💾 Salvar Ficha
-              </button>
+              <button onClick={handleSaveSheetToDb}>💾 Salvar Ficha</button>
             )}
           </>
         )}
