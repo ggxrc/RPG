@@ -74,13 +74,13 @@
   margin-top: 1rem;
   padding: 1em;
   border-radius: 28px;
-  margin-top: -3rem; /* menor margem = sobe */
+  margin-top: -2rem; /* menor margem = sobe */
   font-size: 1.1rem; /* aumentar a fonte */
 }
 
 .attributes-box h3 {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   font-size: 1.8rem;
   color: #482705;
 }
@@ -89,7 +89,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, auto);
-  gap: 0.5rem 2rem;
+  gap: 0.5rem rem;
   justify-items: start;
   padding: 0 6rem;
 }
@@ -142,4 +142,34 @@ body {
 }
 .character-sheet * {
   font-family: "Breafd", serif;
+}
+
+/* --- Estilos para a Seção de Status (Vida e Escudo) --- */
+
+.status-section {
+  position: absolute;
+  /* MANTENHA os valores de 'left' e 'top' que você ajustou para o posicionamento correto! */
+  /* Exemplo (ajuste conforme o seu): */
+  left: 30rem;
+  top: 22rem;
+
+  display: flex;
+  /* ANTES ESTAVA (ou se não estava, este é o padrão para flex): flex-direction: column; */
+
+  align-items: center; /* Para alinhar verticalmente os dois 'status-item' (vida e escudo) se tiverem alturas um pouco diferentes */
+  gap: 1.5rem; /* Ex: 1.5rem de espaço entre o conjunto "coração+vida" e "escudo+defesa" */
+}
+
+/* Os estilos para .status-item, .status-value e .status-item svg geralmente podem permanecer os mesmos: */
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem; /* Espaço entre o ícone e o seu valor numérico */
+  color: #482705; /* Cor do texto (para os números 35 e 19) */
+}
+
+.status-value {
+  font-size: 1.3rem;
+  font-weight: bold;
+  line-height: 2;
 }

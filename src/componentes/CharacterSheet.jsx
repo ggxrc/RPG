@@ -105,7 +105,7 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
     const destrezaAtual = parseInt(edited.Destreza) || 0;
 
     const vidaCalculada = constituicaoAtual * 5 + 10;
-    const escudoCalculado = Math.floor(destrezaAtual / 2);
+    const escudoCalculado = Math.floor(destrezaAtual + 7);
 
     const sheetDataToSave = {
       name: edited.name,
@@ -158,7 +158,7 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
   // --- LÓGICA DE CÁLCULO PARA VIDA E ESCUDO ---
   // Use displayCharacter para que reflita o personagem atual ou os valores editados
   const vida = (parseInt(displayCharacter.Constituição) || 0) * 5 + 10;
-  const escudo = Math.floor((parseInt(displayCharacter.Destreza) || 0) / 2);
+  const escudo = Math.floor((parseInt(displayCharacter.Destreza) || 0) + 7);
 
   return (
     <>
@@ -234,16 +234,16 @@ const CharacterSheet = ({ character, onSaveEdit, onEditClick }) => {
         </div>
 
         {/* NOVA SEÇÃO PARA VIDA E ESCUDO */}
-        {/* <div className="status-section">
+        <div className="status-section">
           <div className="status-item">
-            <Heart color="red" size={28} />
+            <Heart color="#950602" size={20} />
             <span className="status-value">{vida}</span>
           </div>
           <div className="status-item">
-            <Shield color="blue" size={28} />
+            <Shield color="#950602" size={20} />
             <span className="status-value">{escudo}</span>
           </div>
-        </div> */}
+        </div>
         {/* FIM DA NOVA SEÇÃO */}
 
         <div className="attributes-box">
