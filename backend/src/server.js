@@ -3,6 +3,7 @@ import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 import { PrismaClient } from "@prisma/client";
+import cors from "cors";
 import {
   registerUserController /*, loginUserController */,
 } from "./infrastructure/web/userController.js"; // Ajuste o caminho
