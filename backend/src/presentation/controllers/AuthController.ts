@@ -1,13 +1,11 @@
-// src/presentation/controllers/AuthController.ts
-
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { PrismaUserRepository } from "../../infrastructure/repositories/PrismaUserRepository";
 import { RegisterUserUseCase } from "../../application/use-cases/RegisterUserUseCase";
 import { LoginUserUseCase } from "../../application/use-cases/LoginUserUseCase";
 import { AppError } from "../../application/errors/AppError";
 
 export class AuthController {
-  static async register(req: Request, res: Response) {
+  public static async register(req: Request, res: Response) {
     try {
       const { username, email, password } = req.body;
       const userRepo = new PrismaUserRepository();
@@ -28,7 +26,7 @@ export class AuthController {
     }
   }
 
-  static async login(req: Request, res: Response) {
+  public static async login(req: Request, res: Response) {
     try {
       const { emailOrUsername, password } = req.body;
       const userRepo = new PrismaUserRepository();

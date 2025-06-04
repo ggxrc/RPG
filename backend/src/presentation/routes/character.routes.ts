@@ -1,5 +1,3 @@
-// src/presentation/routes/character.routes.ts
-
 import { Router } from "express";
 import { CharacterSheetController } from "../controllers/CharacterSheetController";
 import { ensureAuthenticated } from "../middlewares/ensureAuthenticated";

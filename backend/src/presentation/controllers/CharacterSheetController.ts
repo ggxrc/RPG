@@ -1,12 +1,10 @@
-// src/presentation/controllers/CharacterSheetController.ts
-
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { PrismaCharacterSheetRepository } from "../../infrastructure/repositories/PrismaCharacterSheetRepository";
 import { CreateCharacterSheetUseCase } from "../../application/use-cases/CreateCharacterSheetUseCase";
 import { AppError } from "../../application/errors/AppError";
 
 export class CharacterSheetController {
-  static async create(req: Request, res: Response) {
+  public static async create(req: Request, res: Response) {
     try {
       // req.user.id foi preenchido pelo middleware ensureAuthenticated
       const userId = req.user.id;
@@ -50,7 +48,7 @@ export class CharacterSheetController {
     }
   }
 
-  static async listByUser(req: Request, res: Response) {
+  public static async listByUser(req: Request, res: Response) {
     try {
       const userId = req.user.id;
       const sheetRepo = new PrismaCharacterSheetRepository();

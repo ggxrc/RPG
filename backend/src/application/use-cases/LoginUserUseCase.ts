@@ -1,5 +1,3 @@
-// src/application/use-cases/LoginUserUseCase.ts
-
 import { IUserRepository } from "../../domain/repositories/IUserRepository";
 import { LoginUserDTO } from "../dtos/LoginUserDTO";
 import { AppError } from "../errors/AppError";

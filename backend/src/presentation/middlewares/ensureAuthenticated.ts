@@ -1,5 +1,3 @@
-// src/presentation/middlewares/ensureAuthenticated.ts
-
 import { Request, Response, NextFunction } from "express";
 import { JwtProvider } from "../../shared/utils/JwtProvider";
 import { AppError } from "../../application/errors/AppError";

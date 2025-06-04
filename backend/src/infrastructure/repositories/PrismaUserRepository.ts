@@ -1,5 +1,3 @@
-// src/infrastructure/repositories/PrismaUserRepository.ts
-
 import { IUserRepository } from "../../domain/repositories/IUserRepository";
 import { User } from "../../domain/entities/User";
 import { prisma } from "../database/prismaClient";

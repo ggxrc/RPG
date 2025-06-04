@@ -1,5 +1,3 @@
-// src/application/use-cases/CreateCharacterSheetUseCase.ts
-
 import { ICharacterSheetRepository } from "../../domain/repositories/ICharacterSheetRepository";
 import { CreateCharacterSheetDTO } from "../dtos/CreateCharacterSheetDTO";
 import { AppError } from "../errors/AppError";

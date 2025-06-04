@@ -1,5 +1,3 @@
-// src/infrastructure/repositories/PrismaCharacterSheetRepository.ts
-
 import { ICharacterSheetRepository } from "../../domain/repositories/ICharacterSheetRepository";
 import { CharacterSheet } from "../../domain/entities/CharacterSheet";
 import { prisma } from "../database/prismaClient";
