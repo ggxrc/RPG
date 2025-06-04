@@ -1,44 +1,40 @@
-generator client {
-  provider = "prisma-client-js"
-}
+// prisma/schema.prisma
 
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id           String      @id @default(auto()) @map("_id") @db.ObjectId
-  username     String      @unique
-  email        String      @unique
-  passwordHash String
-  characters   Character[] // Relação: um usuário pode ter várias fichas
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  // Campos para OAuth 2.0 (adicionaremos mais tarde, mas bom prever)
-  // googleId     String?     @unique // Exemplo para login com Google
-  // githubId     String?     @unique // Exemplo para login com GitHub
-
+generator client {
+  provider = "prisma-client-js"
 }
 
-model Character {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  race      String
-  className String   // "class" é uma palavra reservada, então "className" é uma boa escolha
-  health    Int      // Você mencionou "health" e "shield" no testDb.js, então incluí.
-  shield    Int      // Se não precisar, pode remover.
-  imageUrl  String?  // O "?" torna o campo opcional
+model User {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  username     String   @unique
+  email        String   @unique
+  passwordHash String
+  googleId     String?  @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  sheets       CharacterSheet[]
+}
 
-  // Atributos - Usando Json como você já definiu
-  // A estrutura esperada seria algo como:
-  // { "Força": 10, "Destreza": 12, "Constituição": 8, ... }
-  attributes Json
+model CharacterSheet {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String   @db.ObjectId
+  characterName    String
+  className        String
+  race             String
+  characterImageUrl String?
+  strength         Int
+  dexterity        Int
+  constitution     Int
+  intelligence     Int
+  wisdom           Int
+  charisma         Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-  // Relacionamento com o Usuário (dono da ficha)
-  userId    String?  @db.ObjectId // Chave estrangeira para o User, opcional se fichas puderem ser anônimas
-  user      User?    @relation(fields: [userId], references: [id]) // Define a relação
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@index([userId])
 }
