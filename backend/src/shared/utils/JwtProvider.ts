@@ -1,4 +1,4 @@
-import * as jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
 // Carrega as variáveis de ambiente de .env
@@ -8,7 +8,10 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET || "default_secret";
 
 export class JwtProvider {
-  public static sign(payload: object, expiresIn = "1d"): string {
+  public static sign(
+    payload: string | object | Buffer,
+    expiresIn: string | number = "1d"
+  ): string {
     if (!JWT_SECRET) {
       throw new Error("JWT_SECRET não está definido em process.env");
     }

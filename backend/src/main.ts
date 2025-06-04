@@ -1,4 +1,4 @@
-import "dotenv/config"; // carrega variáveis de ambiente
+import "dotenv/config";
 import express, {
   Request,
   Response,
@@ -20,16 +20,17 @@ app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api/characters", characterRouter);
 
-// Middleware de tratamento de erros (final)
+// Handler de erros (note que não usamos 'return' aqui, apenas chamamos res.status... )
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   if (err instanceof AppError) {
-    return res.status(err.statusCode).json({ message: err.message });
+    res.status(err.statusCode).json({ message: err.message });
+  } else {
+    console.error(err);
+    res.status(500).json({ message: "Erro interno do servidor" });
   }
-  console.error(err);
-  return res.status(500).json({ message: "Erro interno do servidor" });
 };
 
-app.use(errorHandler); //  ← Passamos a função já tipada
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

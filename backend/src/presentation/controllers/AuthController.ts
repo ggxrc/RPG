@@ -5,7 +5,11 @@ import { LoginUserUseCase } from "../../application/use-cases/LoginUserUseCase";
 import { AppError } from "../../application/errors/AppError";
 
 export class AuthController {
-  public static async register(req: Request, res: Response) {
+  public static async register(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const { username, email, password } = req.body;
       const userRepo = new PrismaUserRepository();
@@ -16,30 +20,26 @@ export class AuthController {
         email,
         password,
       });
-      return res.status(201).json(result);
+      res.status(201).json(result);
     } catch (err) {
-      if (err instanceof AppError) {
-        return res.status(err.statusCode).json({ message: err.message });
-      }
-      console.error(err);
-      return res.status(500).json({ message: "Erro interno no registro" });
+      next(err); // Passa o erro para o middleware de tratamento de erros
     }
   }
 
-  public static async login(req: Request, res: Response) {
+  public static async login(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const { emailOrUsername, password } = req.body;
       const userRepo = new PrismaUserRepository();
       const loginUseCase = new LoginUserUseCase(userRepo);
 
       const result = await loginUseCase.execute({ emailOrUsername, password });
-      return res.json(result); // { token, user }
+      res.json(result); // { token, user }
     } catch (err) {
-      if (err instanceof AppError) {
-        return res.status(err.statusCode).json({ message: err.message });
-      }
-      console.error(err);
-      return res.status(500).json({ message: "Erro interno no login" });
+      next(err); // Passa o erro para o middleware de tratamento de erros
     }
   }
 }

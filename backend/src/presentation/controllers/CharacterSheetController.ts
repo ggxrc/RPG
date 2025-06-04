@@ -4,7 +4,11 @@ import { CreateCharacterSheetUseCase } from "../../application/use-cases/CreateC
 import { AppError } from "../../application/errors/AppError";
 
 export class CharacterSheetController {
-  public static async create(req: Request, res: Response) {
+  public static async create(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       // req.user.id foi preenchido pelo middleware ensureAuthenticated
       const userId = req.user.id;
@@ -38,25 +42,24 @@ export class CharacterSheetController {
         charisma: Number(charisma),
       });
 
-      return res.status(201).json(sheet);
+      res.status(201).json(sheet);
     } catch (err) {
-      if (err instanceof AppError) {
-        return res.status(err.statusCode).json({ message: err.message });
-      }
-      console.error(err);
-      return res.status(500).json({ message: "Erro interno" });
+      next(err); // Passa o erro para o middleware de tratamento de erros
     }
   }
 
-  public static async listByUser(req: Request, res: Response) {
+  public static async listByUser(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const userId = req.user.id;
       const sheetRepo = new PrismaCharacterSheetRepository();
       const sheets = await sheetRepo.findAllByUserId(userId);
-      return res.json(sheets);
+      res.json(sheets);
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ message: "Erro interno" });
+      next(err); // Passa o erro para o middleware de tratamento de erros
     }
   }
 
