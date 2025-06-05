@@ -18,7 +18,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background: url("../public/imagens/background.gif") no-repeat center center
+  background: url("/imagens/background.gif") no-repeat center center
     fixed;
   background-size: cover;
 }
