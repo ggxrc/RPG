@@ -14,19 +14,25 @@ export function RegisterModal({ isOpen, onClose }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   // Função que será chamada ao enviar o formulário
   const handleSubmit = async (e) => {
     e.preventDefault(); // Previne o comportamento padrão do formulário (recarregar página)
+    setError(""); // Limpa erros anteriores
+
     try {
       // Tenta registrar o usuário com os dados fornecidos
       await register({ username, email, password });
       // Se for bem-sucedido, fecha o modal
       onClose();
     } catch (error) {
-      // Se ocorrer erro, exibe no console e alerta o usuário
+      // Se ocorrer erro, exibe no console e atualiza o estado de erro
       console.error("Erro no cadastro:", error);
-      alert("Erro ao cadastrar. Verifique os dados e tente novamente.");
+      setError(
+        error.response?.data?.message ||
+          "Erro ao cadastrar. Verifique os dados e tente novamente."
+      );
     }
   };
 
@@ -60,6 +66,13 @@ export function RegisterModal({ isOpen, onClose }) {
           onChange={(e) => setPassword(e.target.value)} // Atualiza o estado ao digitar
           required
         />
+
+        {/* Exibe mensagem de erro se houver */}
+        {error && (
+          <p className="error-message" style={{ color: "red" }}>
+            {error}
+          </p>
+        )}
 
         {/* Botão de envio */}
         <button type="submit" disabled={loading}>

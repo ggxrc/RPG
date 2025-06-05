@@ -1,38 +1,14 @@
-// testDb.js
-import { PrismaClient } from "@prisma/client";
+const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-async function main() {
-  console.log("Tentando criar um usuário...");
+async function test() {
   try {
-    const newUser = await prisma.user.create({
-      data: {
-        username: "testuser",
-        email: "test@example.com",
-        passwordHash: "somehash", // Em um app real, isso seria um hash seguro
-      },
-    });
-    console.log("Usuário criado:", newUser);
-
-    // Você também pode tentar criar um personagem, se quiser
-    // const newCharacter = await prisma.character.create({
-    //   data: {
-    //     name: 'Gandalf',
-    //     race: 'Maia',
-    //     className: 'Wizard',
-    //     attributes: { strength: 10, dexterity: 10, constitution: 10, intelligence: 18, wisdom: 18, charisma: 15 },
-    //     health: 100,
-    //     shield: 50,
-    //     // Se quiser associar ao usuário criado acima:
-    //     // userId: newUser.id
-    //   }
-    // });
-    // console.log('Personagem criado:', newCharacter);
-  } catch (e) {
-    console.error("Erro ao criar:", e);
-  } finally {
+    const users = await prisma.user.findMany();
+    console.log('Connection successful, found users:', users.length);
     await prisma.$disconnect();
+  } catch (error) {
+    console.error('Error connecting to database:', error);
   }
 }
 
-main();
+test();
